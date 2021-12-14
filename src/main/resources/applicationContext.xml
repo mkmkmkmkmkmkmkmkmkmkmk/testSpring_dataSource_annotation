@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--xmlns:context="http://www.springframework.org/schema/context"与
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-context.xsd">命名空间可以将jdbc.properties加载进入
+.xml文件中-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--1.3.加载外部properties配置文件,可以用注解@PropertySource(location)配置-->
+    <context:property-placeholder location="classpath:jdbc.properties" />
+
+
+    <!--1.1.c3P0配置加载-->
+   <!-- <bean id="dataSourceC3p0" class="com.mchange.v2.c3p0.ComboPooledDataSource" >
+        &lt;!&ndash;可以使用JSEL（java Spring Expression language）表达式:value=${容器中的key}&ndash;&gt;
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/mydb?useSSL=false&amp;serverTimezone=UTC&amp;characterEncoding=UTF-8&amp;useUnicode=yes"/>
+        <property name="user" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>-->
+
+    <!--1.2.Druid配置加载，可以用 @Bean()配置-->
+<!--    <bean id="dataSourceDruid" class="com.alibaba.druid.pool.DruidDataSource" scope="singleton" init-method="" destroy-method="">-->
+    <bean id="dataSourceDruid" class="com.alibaba.druid.pool.DruidDataSource"  >
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+<!--        <property name="initialSize" value=></property>-->
+<!--        <property name="maxActive" value=""></property>-->
+<!--        <property name="maxWait" value=""></property>-->
+    </bean>
+
+    <!--2.1 必须告诉spring哪个地方（包）有注解需要被扫描到，可以用注解配置@ComponentScan，否则会出现：-->
+    <!--org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'javax.sql.DataSource' available-->
+    <context:component-scan base-package="scan"/>
+
+    <!--3.导入其它xml配置-->
+    <!--<import resource=""/>-->
+
+</beans>
